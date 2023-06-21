@@ -2,8 +2,9 @@ import { Button, Dropdown, Navbar } from "flowbite-react";
 import { isLoggedIn } from "@/utils/checkLogin";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { me } from "@/api/user";
+import { logout, me } from "@/api/user";
 import capitalizeFirstLetter from "@/utils/capitalizeFirstLetter";
+import Link from "next/link";
 
 const Header = () => {
   const router = useRouter();
@@ -13,6 +14,16 @@ const Header = () => {
   const getUserProfile = async () => {
     const response = await me();
     setName(response.name);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      localStorage.removeItem("accessToken");
+      router.push("/");
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   useEffect(() => {
@@ -41,7 +52,9 @@ const Header = () => {
                 color="light"
               >
                 <Dropdown.Item>Profile</Dropdown.Item>
-                <Dropdown.Item>Sign out</Dropdown.Item>
+                <Dropdown.Item onClick={() => handleLogout()}>
+                  Sign out
+                </Dropdown.Item>
               </Dropdown>
             </div>
           ) : (
@@ -53,13 +66,12 @@ const Header = () => {
           <Navbar.Toggle />
         </div>
         <Navbar.Collapse>
-          <Navbar.Link active href="#">
-            <p>Home</p>
+          <Navbar.Link>
+            <Link href="/">Home</Link>
           </Navbar.Link>
-          <Navbar.Link href="#">About</Navbar.Link>
-          <Navbar.Link href="#">Services</Navbar.Link>
-          <Navbar.Link href="#">Pricing</Navbar.Link>
-          <Navbar.Link href="#">Contact</Navbar.Link>
+          <Navbar.Link>
+            <Link href="/products">Products</Link>
+          </Navbar.Link>
         </Navbar.Collapse>
       </Navbar>
     </header>

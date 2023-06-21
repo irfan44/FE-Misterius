@@ -23,4 +23,17 @@ const me = async () => {
   return response.data;
 };
 
-export { login, register, me };
+const logout = async () => {
+  const response = await axios.post(
+    `${url}/user/logout`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+export { login, register, me, logout };
