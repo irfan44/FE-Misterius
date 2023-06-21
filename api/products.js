@@ -1,8 +1,10 @@
 import axios from "axios";
 
-const getAllProduct = async () => {
-    const response = await axios.get('https://wafo-skripsi-production.up.railway.app/product?name=')
+const url = process.env.NEXT_PUBLIC_BE_ENDPOINT;
+
+const getAll = async () => {
+    const response = await axios.get(`${url}/product?name=`)
     return response.data;
 };
 
-export {getAllProduct}
+export {getAll}

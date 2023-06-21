@@ -1,82 +1,106 @@
-import {Button, Label, TextInput} from "flowbite-react";
+import { Button, Label, TextInput } from "flowbite-react";
+import Link from "next/link";
+import { useState } from "react";
+import { register } from "@/api/user";
+import { useRouter } from "next/router";
 
 const Register = () => {
-    return (<section className="bg-gray-50">
-        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-            <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-gray-900">
-                YukJahit
-            </a>
-            <div
-                className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
-                <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                    <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
-                        Register
-                    </h1>
-                    <form className="space-y-4 md:space-y-6" action="#">
-                        <div>
-                            <div className="mb-2 block">
-                                <Label
-                                    htmlFor="name"
-                                    value="Name"
-                                />
-                            </div>
-                            <TextInput
-                                id="name"
-                                placeholder="Insert your name here"
-                                required
-                                type="text"
-                            />
-                        </div>
-                        <div>
-                            <div className="mb-2 block">
-                                <Label
-                                    htmlFor="email"
-                                    value="Email"
-                                />
-                            </div>
-                            <TextInput
-                                id="email"
-                                placeholder="Insert your email here"
-                                required
-                                type="email"
-                            />
-                        </div>
-                        <div>
-                            <div className="mb-2 block">
-                                <Label
-                                    htmlFor="password"
-                                    value="Password"
-                                />
-                            </div>
-                            <TextInput
-                                id="password"
-                                placeholder="********"
-                                required
-                                type="password"
-                            />
-                        </div>
-                        <div>
-                            <div className="mb-2 block">
-                                <Label
-                                    htmlFor="phone"
-                                    value="Phone"
-                                />
-                            </div>
-                            <TextInput
-                                id="phone"
-                                placeholder="Insert your phone number here"
-                                required
-                                type="text"
-                            />
-                        </div>
-                        <Button type="submit">
-                            Register
-                        </Button>
-                    </form>
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    try {
+      await register({ name, email, password, phone });
+      router.push("/login");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  return (
+    <section className="bg-gray-50">
+      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+        <a
+          href="#"
+          className="flex items-center mb-6 text-2xl font-semibold text-gray-900"
+        >
+          YukJahit
+        </a>
+        <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
+          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
+              Register
+            </h1>
+            <form className="space-y-4 md:space-y-6" onSubmit={handleRegister}>
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="name" value="Name" />
                 </div>
-            </div>
+                <TextInput
+                  id="name"
+                  placeholder="Insert your name here"
+                  required
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="email" value="Email" />
+                </div>
+                <TextInput
+                  id="email"
+                  placeholder="Insert your email here"
+                  required
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="password" value="Password" />
+                </div>
+                <TextInput
+                  id="password"
+                  placeholder="Insert your password here"
+                  required
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="phone" value="Phone" />
+                </div>
+                <TextInput
+                  id="phone"
+                  placeholder="Insert your phone number here"
+                  required
+                  type="text"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+              </div>
+              <Button type="submit">Register</Button>
+            </form>
+            <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+              Already have an account?{" "}
+              <Link className="font-bold hover:text-teal-600" href="/login">
+                Login
+              </Link>
+            </p>
+          </div>
         </div>
-    </section>)
+      </div>
+    </section>
+  );
 };
 
 export default Register;
