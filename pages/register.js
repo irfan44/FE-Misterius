@@ -1,4 +1,4 @@
-import { Button, Label, TextInput } from "flowbite-react";
+import { Alert, Button, Label, TextInput } from "flowbite-react";
 import Link from "next/link";
 import { useState } from "react";
 import { register } from "@/api/user";
@@ -10,14 +10,16 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
+  const [error, setError] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
+      setError(false);
       await register({ name, email, password, phone });
       router.push("/login");
     } catch (e) {
-      console.log(e);
+      setError(true);
     }
   };
 
@@ -35,6 +37,12 @@ const Register = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
               Register
             </h1>
+            {error && (
+              <Alert color="failure">
+                <p className="font-medium">Email already used!</p>
+                <p>Please enter other email</p>
+              </Alert>
+            )}
             <form className="space-y-4 md:space-y-6" onSubmit={handleRegister}>
               <div>
                 <div className="mb-2 block">
@@ -46,6 +54,7 @@ const Register = () => {
                   required
                   type="text"
                   value={name}
+                  color={error && "failure"}
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
@@ -59,6 +68,7 @@ const Register = () => {
                   required
                   type="email"
                   value={email}
+                  color={error && "failure"}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
@@ -72,6 +82,7 @@ const Register = () => {
                   required
                   type="password"
                   value={password}
+                  color={error && "failure"}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
@@ -85,6 +96,7 @@ const Register = () => {
                   required
                   type="text"
                   value={phone}
+                  color={error && "failure"}
                   onChange={(e) => setPhone(e.target.value)}
                 />
               </div>

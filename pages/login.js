@@ -1,4 +1,4 @@
-import { Button, Label, TextInput } from "flowbite-react";
+import { Alert, Button, Label, TextInput } from "flowbite-react";
 import Link from "next/link";
 import { useState } from "react";
 import { login } from "@/api/user";
@@ -8,15 +8,17 @@ const Login = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+      setError(false);
       const response = await login({ email, password });
       localStorage.setItem("accessToken", response.token);
       router.push("/");
     } catch (e) {
-      console.log(e);
+      setError(true);
     }
   };
 
@@ -34,6 +36,12 @@ const Login = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
               Login
             </h1>
+            {error && (
+              <Alert color="failure">
+                <p className="font-medium">Incorrect email or password!</p>
+                <p>Please enter the correct email or password</p>
+              </Alert>
+            )}
             <form className="space-y-4 md:space-y-6" onSubmit={handleLogin}>
               <div>
                 <div className="mb-2 block">
@@ -45,6 +53,7 @@ const Login = () => {
                   required
                   type="email"
                   value={email}
+                  color={error && "failure"}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
@@ -58,6 +67,7 @@ const Login = () => {
                   required
                   type="password"
                   value={password}
+                  color={error && "failure"}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
