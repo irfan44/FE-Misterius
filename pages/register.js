@@ -1,6 +1,6 @@
 import { Alert, Button, Label, TextInput } from "flowbite-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { register } from "@/api/user";
 import { useRouter } from "next/router";
 
@@ -10,18 +10,29 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
+
+  // UI State
   const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       setError(false);
       await register({ name, email, password, phone });
+      setIsLoading(false);
       router.push("/login");
     } catch (e) {
       setError(true);
     }
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("accessToken")) {
+      router.push("/");
+    }
+  }, []);
 
   return (
     <section className="bg-gray-50">
@@ -100,7 +111,9 @@ const Register = () => {
                   onChange={(e) => setPhone(e.target.value)}
                 />
               </div>
-              <Button type="submit">Register</Button>
+              <Button type="submit" isProcessing={isLoading}>
+                Register
+              </Button>
             </form>
             <p className="text-sm font-light text-gray-500 dark:text-gray-400">
               Already have an account?{" "}

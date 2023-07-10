@@ -1,6 +1,6 @@
 import { Alert, Button, Label, TextInput } from "flowbite-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { login } from "@/api/user";
 import { useRouter } from "next/router";
 
@@ -8,19 +8,30 @@ const Login = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // UI State
   const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       setError(false);
       const response = await login({ email, password });
       localStorage.setItem("accessToken", response.token);
+      setIsLoading(false);
       router.push("/");
     } catch (e) {
       setError(true);
     }
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("accessToken")) {
+      router.push("/");
+    }
+  }, []);
 
   return (
     <section className="bg-gray-50">
@@ -71,7 +82,9 @@ const Login = () => {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <Button type="submit">Login</Button>
+              <Button type="submit" isProcessing={isLoading}>
+                Login
+              </Button>
             </form>
             <p className="text-sm font-light text-gray-500 dark:text-gray-400">
               Don’t have an account yet?{" "}

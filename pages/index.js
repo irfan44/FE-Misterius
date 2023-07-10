@@ -1,21 +1,28 @@
-import { Button } from "flowbite-react";
+import { Button, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { logout, me } from "@/api/user";
 import { useRouter } from "next/router";
 
 export default function Home() {
-  const [featuredProduct, setFeaturedProducts] = useState({});
   const router = useRouter();
+  const [featuredProduct, setFeaturedProducts] = useState({});
+
+  const [isPageLoading, setIsPageLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getFeaturedProducts = async () => {
+    setIsPageLoading(true);
     const userProfile = await me();
+    setIsPageLoading(false);
     setFeaturedProducts(userProfile);
   };
 
   const handleLogout = async () => {
+    setIsLoading(true);
     try {
       await logout();
       localStorage.removeItem("accessToken");
+      setIsLoading(false);
       router.push("/login");
     } catch (e) {
       console.log(e);
@@ -43,24 +50,34 @@ export default function Home() {
           </p>
         </div>
       </div>
-      <div className="mx-auto">
-        <div className="flex space-x-2">
-          <p>Name : </p>
-          <p>{featuredProduct.name}</p>
+      {isPageLoading ? (
+        <div className="h-full w-full flex items-center">
+          <Spinner />
         </div>
-        <div className="flex space-x-2">
-          <p>Email :</p>
-          <p>{featuredProduct.email}</p>
-        </div>
-        <div className="flex space-x-2">
-          <p>Phone :</p>
-          <p>{featuredProduct.phone}</p>
-        </div>
-      </div>
-      {featuredProduct.name && (
-        <div className="mt-6">
-          <Button onClick={() => handleLogout()}>Logout</Button>
-        </div>
+      ) : (
+        <>
+          <div className="mx-auto">
+            <div className="flex space-x-2">
+              <p>Name : </p>
+              <p>{featuredProduct.name}</p>
+            </div>
+            <div className="flex space-x-2">
+              <p>Email :</p>
+              <p>{featuredProduct.email}</p>
+            </div>
+            <div className="flex space-x-2">
+              <p>Phone :</p>
+              <p>{featuredProduct.phone}</p>
+            </div>
+          </div>
+          {featuredProduct.name && (
+            <div className="mt-6">
+              <Button onClick={() => handleLogout()} isProcessing={isLoading}>
+                Logout
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </section>
   );
